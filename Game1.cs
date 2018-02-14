@@ -18,7 +18,12 @@ namespace FishGame
         Fish fish;
         List<FoodPellet> PelletList;
         List<Bubble> BubbleList;
+        List<Waterline> WaterLineSprites;
+        double BubbleTime = 0;
+        Random ran;
 
+        Texture2D floorTex;
+        Texture2D bgTex;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -37,6 +42,7 @@ namespace FishGame
 
             base.Initialize();
             this.IsMouseVisible = true;
+            ran = new Random();
         }
 
         /// <summary>
@@ -48,8 +54,9 @@ namespace FishGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            
 
+            floorTex = Content.Load<Texture2D>(@"Art/Rocks");
+            bgTex = Content.Load<Texture2D>(@"Art/bg");
             fish = new Fish();
             fish.LoadContent(@"Art/Fishy", Content);
 
@@ -57,6 +64,16 @@ namespace FishGame
 
             PelletList = new List<FoodPellet>();
             BubbleList = new List<Bubble>();
+            WaterLineSprites = new List<Waterline>();
+
+            for(int i = -1; (i < (GraphicsDevice.Viewport.Width/32) + 3); i++)
+            {
+                Waterline nl = new Waterline();
+                nl._Position.X = 32 * i;
+                nl._Position.Y = 70;
+                nl.LoadContent(@"Art/Waterline", Content);
+                WaterLineSprites.Add(nl);
+            }
             // TODO: use this.Content to load your game content here
         }
 
@@ -93,21 +110,26 @@ namespace FishGame
 
             }
 
-            Random ran = new Random();
-            int spawnBubble = ran.Next(0, 30);
+            BubbleTime += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(spawnBubble == 1 || spawnBubble == 15)
+            double BubblesPerSec = 6;
+            double bubbleTimer = (1.0 / BubblesPerSec);
+            if (BubbleTime > bubbleTimer)
             {
-                Bubble b = new Bubble();
-                b.LoadContent(@"Art/Bubble", Content);
-                b._Position.X = ran.Next(0, 800);
-                b._Position.Y = ran.Next(500, 1200);
-                BubbleList.Add(b);
+                GetBubble();
+                BubbleTime -= bubbleTimer;
+                
+
             }
 
             foreach(Bubble b in BubbleList)
             {
                 b.Update(gameTime);
+            }
+
+            foreach(Waterline nl in WaterLineSprites)
+            {
+                nl.Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -117,15 +139,20 @@ namespace FishGame
         {
             if(InputHelper.LeftButtonClicked)
             {
-                FoodPellet np = new FoodPellet();
-                np.LoadContent(@"Art/SlimeShot", Content);
-                np._Position = InputHelper.MouseScreenPos;
-                PelletList.Add(np);
+                if(InputHelper.MouseScreenPos.Y < 70)
+                {
+                    GetFood();
+                }
             }
 
             if(InputHelper.IsKeyDown(Keys.LeftControl) && InputHelper.IsKeyDown(Keys.LeftShift) && InputHelper.LeftButtonClicked)
             {
                 Console.WriteLine(InputHelper.MouseScreenPos);
+            }
+
+            if(InputHelper.RightButtonHeld)
+            {
+                GetBubble(InputHelper.MouseScreenPos);
             }
         }
         /// <summary>
@@ -134,9 +161,27 @@ namespace FishGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkBlue);
+            Color WaterColor = new Color(204, 176, 148, 255);
+            GraphicsDevice.Clear(WaterColor);
             spriteBatch.Begin();
             // TODO: Add your drawing code here
+
+
+            spriteBatch.Draw(bgTex, new Vector2(0, 70), Color.White);
+
+            foreach (Waterline nl in WaterLineSprites)
+            {
+                nl.Draw(spriteBatch);
+            }
+
+            foreach (Bubble b in BubbleList)
+            {
+                b.Draw(spriteBatch);
+            }
+
+
+            spriteBatch.Draw(floorTex, new Vector2(0, GraphicsDevice.Viewport.Height - 50), Color.White);
+
             fish.Draw(spriteBatch);
 
             foreach (FoodPellet fp in PelletList)
@@ -145,14 +190,65 @@ namespace FishGame
             }
 
 
-            foreach (Bubble b in BubbleList)
-            {
-                b.Draw(spriteBatch);
-            }
+
 
             base.Draw(gameTime);
 
             spriteBatch.End();
+        }
+
+        private void GetBubble()
+        {
+            Bubble b = BubbleList.Find(x => x._CurrentState == Sprite.SpriteState.kStateInActive);
+
+            if(b != null)
+            {
+                b.Activate(new Vector2(ran.Next(0, 800), ran.Next(500, 600)));
+            }
+            else
+            {
+                b = new Bubble();
+                b.LoadContent(@"Art/Bubble", Content);
+                b._Position.X = ran.Next(0, 800);
+                b._Position.Y = ran.Next(500, 600);
+                BubbleList.Add( b);
+            }
+        }
+
+        private void GetFood()
+        {
+            FoodPellet np = PelletList.Find(x => x._CurrentState == Sprite.SpriteState.kStateInActive);
+
+            if (np != null)
+            {
+                np.Activate(InputHelper.MouseScreenPos);
+            }
+            else
+            {
+                np = new FoodPellet();
+                np.LoadContent(@"Art/SlimeShot", Content);
+                np._Position = InputHelper.MouseScreenPos;
+                PelletList.Add(np);
+            }
+        }
+
+        private void GetBubble(Vector2 pos)
+        {
+            Bubble b = BubbleList.Find(x => x._CurrentState == Sprite.SpriteState.kStateInActive);
+
+            if (b != null)
+            {
+                b.Activate(pos);
+            }
+            else
+            {
+                b = new Bubble();
+                b.LoadContent(@"Art/Bubble", Content);
+                b._Position.X = ran.Next(0, 800);
+                b._Position.Y = ran.Next(500, 600);
+                b._Position = pos;
+                BubbleList.Add(b);
+            }
         }
     }
 }

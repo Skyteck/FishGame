@@ -10,27 +10,43 @@ namespace FishGame
     class FoodPellet : Sprite
     {
         float sinSeed = 0;
+        float fallSpeed = 50f;
 
         public FoodPellet()
         {
-            sinSeed = new Random().Next(0, 5);
+            Activate();
         }
 
-        public override void Update(GameTime gt)
+        protected override void UpdateActive(GameTime gt)
         {
-            base.Update(gt);
 
-            float fallSpeed = 50f;
 
-            this._Position.Y += (float)(fallSpeed * gt.ElapsedGameTime.TotalSeconds);
-
-            this._Position.X += (float)(Math.Sin(sinSeed));
-            sinSeed += 0.125f;
-
-            if(this._Position.Y > 500)
+            if(this._Position.Y < 70)
             {
-                this.Deactivate();
+                this._Position.Y += (float)((fallSpeed*2) * gt.ElapsedGameTime.TotalSeconds);
             }
+            else
+            {
+                this._Position.Y += (float)(fallSpeed * gt.ElapsedGameTime.TotalSeconds);
+
+                this._Position.X += (float)(Math.Sin(sinSeed));
+                sinSeed += 0.125f;
+
+                if(this._Position.Y > 500)
+                {
+                    this.Deactivate();
+                }
+            }
+            base.UpdateActive(gt);
+
+
+        }
+
+        public override void Activate(Vector2 pos)
+        {
+            sinSeed = new Random().Next(0, 5);
+
+            base.Activate(pos);
         }
     }
 }

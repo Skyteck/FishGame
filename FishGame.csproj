@@ -45,6 +45,7 @@
     <Compile Include="GameObjects\Bubble.cs" />
     <Compile Include="GameObjects\FIsh.cs" />
     <Compile Include="GameObjects\FoodPellet.cs" />
+    <Compile Include="GameObjects\Waterline.cs" />
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="InputHelper.cs" />
     <Compile Include="Program.cs" />

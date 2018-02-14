@@ -11,6 +11,7 @@ namespace FishGame.GameObjects
 {
     class Fish : Sprite
     {
+        Random ran;
         double moveTimer;
         Vector2 targetPos;
         Texture2D mouthTex;
@@ -65,11 +66,48 @@ namespace FishGame.GameObjects
             }
         }
 
+        public int Hunger
+        {
+            get
+            {
+                return hunger;
+            }
+            set
+            {
+                if(value < 0)
+                {
+                    hunger = 0;
+                }
+                else if(value > 100)
+                {
+                    hunger = 100;
+                }
+                else
+                {
+                    hunger = value;
+                }
+
+            }
+        }
+
         bool moving = false;
+
+        enum FishStatus
+        {
+            kStatusFood,
+            kStatusRoam,
+            kStatusDead
+        }
+
+        FishStatus fishStatus = FishStatus.kStatusRoam;
+
+        int hunger = 0;
+        double hungerTimer = 0.5f;
 
         public Fish()
         {
-            moveTimer = new Random().Next(0, 5);
+            ran = new Random();
+            moveTimer = ran.Next(0, 5);
         }
 
         public override void LoadContent(string path, ContentManager content)
@@ -82,72 +120,113 @@ namespace FishGame.GameObjects
         public void Update(GameTime gt, List<FoodPellet> pList)
         {
 
+            hungerTimer -= gt.ElapsedGameTime.TotalSeconds;
+            if (hungerTimer < 0)
+            {
+                Hunger++;
+                hungerTimer = 0.5f;
+                Console.WriteLine(Hunger);
+                if(fishStatus == FishStatus.kStatusRoam)
+                {
+                    if(hunger > 20)
+                    {
+                        fishStatus = FishStatus.kStatusFood;
+                    }
+
+                }
+            }
+            if (fishStatus == FishStatus.kStatusRoam)
+            {
+
+                moveTimer -= gt.ElapsedGameTime.TotalSeconds;
+
+                if (moveTimer <= 0)
+                {
+                    moving = true;
+                    Random ran = new Random();
+
+                    moveTimer = ran.Next(0, 5);
+
+
+                    targetPos.X = ran.Next(20, 700);
+                    targetPos.Y = ran.Next(75, 400);
+                }
+            }
+            else if(fishStatus == FishStatus.kStatusFood)
+            {
+                if(pList.FindAll(x=>x._CurrentState == SpriteState.kStateActive).Count > 0)
+                {
+
+                    float closestDistance = 100000;
+                    foreach (FoodPellet p in pList.FindAll(x => x._CurrentState == SpriteState.kStateActive))
+                    {
+                        //find closest pellet.
+                        if(p._Position.Y < 70)
+                        {
+                            continue;
+                        }
+                        float currentDistance = Vector2.Distance(this.FishMouth.Location.ToVector2(), p._Position);
+                        if (currentDistance < closestDistance)
+                        {
+                            closestPellet = p;
+                            closestDistance = currentDistance;
+                        }
+                    }
+                }
+
+                if (closestPellet != null)
+                {
+                    targetPos = closestPellet._Position;
+                    moving = true;
 
 
 
-            //moveTimer -= gt.ElapsedGameTime.TotalSeconds;
-
-            //if (moveTimer <= 0)
-            //{
-            //    moving = true;
-            //    Random ran = new Random();
-
-            //    moveTimer = ran.Next(0, 5);
-
-
-            //    targetPos.X = ran.Next(50, 700);
-            //    targetPos.Y = ran.Next(50, 400);
-
-
-
-            //}
+                    if (closestPellet._CurrentState == SpriteState.kStateInActive || closestPellet._Position.Y < 70)
+                    {
+                        moving = false;
+                        if (_FlipX)
+                        {
+                            MyDir = CurrentDirection.kDirectionLeft;
+                        }
+                        else
+                        {
+                            MyDir = CurrentDirection.kDirectionRight;
+                        }
+                    }
+                    if (closestPellet._BoundingBox.Intersects(this.FishMouth))
+                    {
+                        closestPellet.Deactivate();
+                        closestPellet = null;
+                        Hunger -= 20;
+                        moving = false;
+                        fishStatus = FishStatus.kStatusRoam;
+                    }
+                }
+                else
+                {
+                    fishStatus = FishStatus.kStatusRoam;
+                }
+            }
+            else if(fishStatus == FishStatus.kStatusDead)
+            {
+                this._Rotation = MathHelper.ToRadians(180);
+                if(this._Position.Y > 70)
+                {
+                    float speed = 100f;
+                    this._Position.Y -= (float)(speed * gt.ElapsedGameTime.TotalSeconds);
+                }
+            }
 
             //if (InputHelper.LeftButtonClicked)
             //{
             //    moving = true;
             //    targetPos = InputHelper.MouseScreenPos;
             //}
-            if(pList.FindAll(x=>x._CurrentState == SpriteState.kStateActive).Count > 0)
+
+            if(Hunger >= 100)
             {
-
-                float closestDistance = 100000;
-                foreach (FoodPellet p in pList.FindAll(x => x._CurrentState == SpriteState.kStateActive))
-                {
-                    //find closest pellet.
-                    float currentDistance = Vector2.Distance(this.FishMouth.Location.ToVector2(), p._Position);
-                    if (currentDistance < closestDistance)
-                    {
-                        closestPellet = p;
-                        closestDistance = currentDistance;
-                    }
-                }
-                if (closestPellet != null)
-                {
-                    if (closestPellet._BoundingBox.Intersects(this.FishMouth))
-                    {
-                        closestPellet.Deactivate();
-                        moving = false;
-                    }
-                }
+                this.fishStatus = FishStatus.kStatusDead;
             }
-
-            if (closestPellet != null)
-            {
-                targetPos = closestPellet._Position;
-                moving = true;
-                if (closestPellet._BoundingBox.Intersects(this.FishMouth))
-                {
-                    closestPellet.Deactivate();
-                }
-
-
-                if (closestPellet._CurrentState == SpriteState.kStateInActive)
-                {
-                    moving = false;
-                }
-
-            }
-
 
             if (moving)
             {
