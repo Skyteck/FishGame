@@ -36,7 +36,7 @@ namespace FishGame.GameObjects
                 Rectangle newRect;
                 if(MyDir == CurrentDirection.kDirectionRight)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Right - 10, (this._BoundingBox.Top + (this.frameWidth / 2)) + 5, 5, 5);
+                    newRect = new Rectangle(this._BoundingBox.Right - (int)(15 * this._Scale.X), (this._BoundingBox.Top + (this.frameWidth / 2)) + (int)(5 * this._Scale.Y), 5, 5);
                 }
                 else if (MyDir == CurrentDirection.kDirectionLeft)
                 {
@@ -44,7 +44,7 @@ namespace FishGame.GameObjects
                 }
                 else if (MyDir == CurrentDirection.kDirectionUpRight)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Right - 10, (this._BoundingBox.Top + 20), 5, 5);
+                    newRect = new Rectangle(this._BoundingBox.Right - 15, (this._BoundingBox.Top + 20), 5, 5);
                 }
                 else if (MyDir == CurrentDirection.kDirectionDownRight)
                 {
@@ -108,8 +108,8 @@ namespace FishGame.GameObjects
         {
             ran = new Random();
             moveTimer = ran.Next(0, 5);
-            //this._Scale.X = 0.5f;
-            //this._Scale.Y = 0.5f;
+            this._Scale.X = 0.5f;
+            this._Scale.Y = 0.5f;
         }
 
         public override void LoadContent(string path, ContentManager content)
@@ -122,6 +122,15 @@ namespace FishGame.GameObjects
         public void Update(GameTime gt, List<FoodPellet> pList)
         {
 
+
+            //RealFishMove(gt, pList);
+            DebugMove();
+            base.Update(gt);
+
+        }
+
+        private void RealFishMove(GameTime gt, List<FoodPellet> pList)
+        {
             hungerTimer -= gt.ElapsedGameTime.TotalSeconds;
             if (hungerTimer < 0)
             {
@@ -335,48 +344,66 @@ namespace FishGame.GameObjects
                     }
                 }
             }
+        }
 
-            //this._Rotation = 0;
-            //if (InputHelper.IsKeyDown(Keys.Left))
-            //{
-            //    _FlipX = true;
-            //    if (InputHelper.IsKeyDown(Keys.Down))
-            //    {
-            //        this._Rotation = MathHelper.ToRadians(-45);
-            //        MyDir = CurrentDirection.kDirectionDownLeft;
-            //    }
-            //    else if(InputHelper.IsKeyDown(Keys.Up))
-            //    {
-            //        this._Rotation = MathHelper.ToRadians(45);
-            //        MyDir = CurrentDirection.kDirectionUpLeft;
+        private void DebugMove()
+        {
 
-            //    }
-            //    else
-            //    {
-            //        MyDir = CurrentDirection.kDirectionLeft;
-            //    }
-            //}
-            //else if (InputHelper.IsKeyDown(Keys.Right))
-            //{
-            //    _FlipX = false;
-            //    if (InputHelper.IsKeyDown(Keys.Up))
-            //    {
-            //        this._Rotation = MathHelper.ToRadians(-45);
-            //        MyDir = CurrentDirection.kDirectionUpRight;
-            //    }
-            //    else if (InputHelper.IsKeyDown(Keys.Down))
-            //    {
-            //        this._Rotation = MathHelper.ToRadians(45);
-            //        MyDir = CurrentDirection.kDirectionDownRight;
+            this._Rotation = 0;
+            if (InputHelper.IsKeyDown(Keys.Left))
+            {
+                _FlipX = true;
+                if (InputHelper.IsKeyDown(Keys.Down))
+                {
+                    this._Rotation = MathHelper.ToRadians(-45);
+                    MyDir = CurrentDirection.kDirectionDownLeft;
+                }
+                else if (InputHelper.IsKeyDown(Keys.Up))
+                {
+                    this._Rotation = MathHelper.ToRadians(45);
+                    MyDir = CurrentDirection.kDirectionUpLeft;
 
-            //    }
-            //    else
-            //    {
-            //        MyDir = CurrentDirection.kDirectionRight;
-            //    }
-            //}
-            base.Update(gt);
+                }
+                else
+                {
+                    MyDir = CurrentDirection.kDirectionLeft;
+                }
+            }
+            else if (InputHelper.IsKeyDown(Keys.Right))
+            {
+                _FlipX = false;
+                if (InputHelper.IsKeyDown(Keys.Up))
+                {
+                    this._Rotation = MathHelper.ToRadians(-45);
+                    MyDir = CurrentDirection.kDirectionUpRight;
+                }
+                else if (InputHelper.IsKeyDown(Keys.Down))
+                {
+                    this._Rotation = MathHelper.ToRadians(45);
+                    MyDir = CurrentDirection.kDirectionDownRight;
 
+                }
+                else
+                {
+                    MyDir = CurrentDirection.kDirectionRight;
+                }
+            }
+
+            if(InputHelper.IsKeyPressed(Keys.Space))
+            {
+                if(this._Scale.X == 1.0f)
+                {
+                    this._Scale.X = 0.5f;
+                    this._Scale.Y = 0.5f;
+                    Console.WriteLine(this._BoundingBox.Right);
+                }
+                else
+                {
+
+                    this._Scale.X = 1f;
+                    this._Scale.Y = 1f;
+                }
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
