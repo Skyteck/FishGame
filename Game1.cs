@@ -167,20 +167,20 @@ namespace FishGame
             // TODO: Add your drawing code here
 
 
-            spriteBatch.Draw(bgTex, new Vector2(0, 70), Color.White);
+            //spriteBatch.Draw(bgTex, new Vector2(0, 70), Color.White);
 
-            foreach (Waterline nl in WaterLineSprites)
-            {
-                nl.Draw(spriteBatch);
-            }
+            //foreach (Waterline nl in WaterLineSprites)
+            //{
+            //    nl.Draw(spriteBatch);
+            //}
 
-            foreach (Bubble b in BubbleList)
-            {
-                b.Draw(spriteBatch);
-            }
+            //foreach (Bubble b in BubbleList)
+            //{
+            //    b.Draw(spriteBatch);
+            //}
 
 
-            spriteBatch.Draw(floorTex, new Vector2(0, GraphicsDevice.Viewport.Height - 50), Color.White);
+            //spriteBatch.Draw(floorTex, new Vector2(0, GraphicsDevice.Viewport.Height - 50), Color.White);
 
             fish.Draw(spriteBatch);
 

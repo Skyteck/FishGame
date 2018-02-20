@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Input;
 namespace FishGame.GameObjects
 {
     class Fish : Sprite
@@ -36,15 +36,15 @@ namespace FishGame.GameObjects
                 Rectangle newRect;
                 if(MyDir == CurrentDirection.kDirectionRight)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Right - 10, (this._BoundingBox.Top + (this.frameWidth / 2)), 5, 5);
+                    newRect = new Rectangle(this._BoundingBox.Right - 10, (this._BoundingBox.Top + (this.frameWidth / 2)) + 5, 5, 5);
                 }
                 else if (MyDir == CurrentDirection.kDirectionLeft)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Left - 5, (this._BoundingBox.Top + (this.frameWidth / 2) - 5), 5, 5);
+                    newRect = new Rectangle(this._BoundingBox.Left + 10, (this._BoundingBox.Top + (this.frameWidth / 2) + 5), 5, 5);
                 }
                 else if (MyDir == CurrentDirection.kDirectionUpRight)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Right - 20, (this._BoundingBox.Top + 10), 5, 5);
+                    newRect = new Rectangle(this._BoundingBox.Right - 10, (this._BoundingBox.Top + 20), 5, 5);
                 }
                 else if (MyDir == CurrentDirection.kDirectionDownRight)
                 {
@@ -52,11 +52,11 @@ namespace FishGame.GameObjects
                 }
                 else if (MyDir == CurrentDirection.kDirectionUpLeft)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Left, (this._BoundingBox.Top + 10), 5, 5);
+                    newRect = new Rectangle(this._BoundingBox.Left + 10, (this._BoundingBox.Top + 20), 5, 5);
                 }
                 else if (MyDir == CurrentDirection.kDirectionDownLeft)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Left + 10, (this._BoundingBox.Bottom - 20), 5, 5);
+                    newRect = new Rectangle(this._BoundingBox.Left + 20, (this._BoundingBox.Bottom - 20), 5, 5);
                 }
                 else
                 {
@@ -108,6 +108,8 @@ namespace FishGame.GameObjects
         {
             ran = new Random();
             moveTimer = ran.Next(0, 5);
+            //this._Scale.X = 0.5f;
+            //this._Scale.Y = 0.5f;
         }
 
         public override void LoadContent(string path, ContentManager content)
@@ -126,9 +128,9 @@ namespace FishGame.GameObjects
                 Hunger++;
                 hungerTimer = 0.5f;
                 Console.WriteLine(Hunger);
-                if(fishStatus == FishStatus.kStatusRoam)
+                if (fishStatus == FishStatus.kStatusRoam)
                 {
-                    if(hunger > 20)
+                    if (hunger > 20)
                     {
                         fishStatus = FishStatus.kStatusFood;
                     }
@@ -152,16 +154,16 @@ namespace FishGame.GameObjects
                     targetPos.Y = ran.Next(75, 400);
                 }
             }
-            else if(fishStatus == FishStatus.kStatusFood)
+            else if (fishStatus == FishStatus.kStatusFood)
             {
-                if(pList.FindAll(x=>x._CurrentState == SpriteState.kStateActive).Count > 0)
+                if (pList.FindAll(x => x._CurrentState == SpriteState.kStateActive).Count > 0)
                 {
 
                     float closestDistance = 100000;
                     foreach (FoodPellet p in pList.FindAll(x => x._CurrentState == SpriteState.kStateActive))
                     {
                         //find closest pellet.
-                        if(p._Position.Y < 70)
+                        if (p._Position.Y < 70)
                         {
                             continue;
                         }
@@ -207,15 +209,15 @@ namespace FishGame.GameObjects
                     fishStatus = FishStatus.kStatusRoam;
                 }
             }
-            else if(fishStatus == FishStatus.kStatusDead)
-            {
-                this._Rotation = MathHelper.ToRadians(180);
-                if(this._Position.Y > 70)
-                {
-                    float speed = 100f;
-                    this._Position.Y -= (float)(speed * gt.ElapsedGameTime.TotalSeconds);
-                }
-            }
+            //else if(fishStatus == FishStatus.kStatusDead)
+            //{
+            //    this._Rotation = MathHelper.ToRadians(180);
+            //    if(this._Position.Y > 70)
+            //    {
+            //        float speed = 100f;
+            //        this._Position.Y -= (float)(speed * gt.ElapsedGameTime.TotalSeconds);
+            //    }
+            //}
 
             //if (InputHelper.LeftButtonClicked)
             //{
@@ -223,10 +225,10 @@ namespace FishGame.GameObjects
             //    targetPos = InputHelper.MouseScreenPos;
             //}
 
-            if(Hunger >= 100)
-            {
-                this.fishStatus = FishStatus.kStatusDead;
-            }
+            //if(Hunger >= 100)
+            //{
+            //    this.fishStatus = FishStatus.kStatusDead;
+            //}
 
             if (moving)
             {
@@ -262,17 +264,17 @@ namespace FishGame.GameObjects
                 }
 
 
-                if ( Math.Abs((this.FishMouth.Location.ToVector2().Y - targetPos.Y)) > 5)
+                if (Math.Abs((this.FishMouth.Location.ToVector2().Y - targetPos.Y)) > 5)
                 {
 
                     if (this.FishMouth.Location.ToVector2().Y < targetPos.Y)
                     {
                         this._Position.Y += speed * (float)gt.ElapsedGameTime.TotalSeconds;
 
-                        if(Math.Abs((this.FishMouth.Location.ToVector2().Y - targetPos.Y)) > 15 )
+                        if (Math.Abs((this.FishMouth.Location.ToVector2().Y - targetPos.Y)) > 15)
                         {
 
-                            if(_FlipX)
+                            if (_FlipX)
                             {
                                 this._Rotation = MathHelper.ToRadians(-45);
                                 MyDir = CurrentDirection.kDirectionDownLeft;
@@ -308,7 +310,7 @@ namespace FishGame.GameObjects
                             }
                         }
 
-                        
+
 
                     }
                 }
@@ -318,12 +320,12 @@ namespace FishGame.GameObjects
                 }
 
 
-                if(Vector2.Distance(this.FishMouth.Location.ToVector2(), targetPos) < 10)
+                if (Vector2.Distance(this.FishMouth.Location.ToVector2(), targetPos) < 10)
                 {
                     moving = false;
                     this._Rotation = 0;
 
-                    if(_FlipX)
+                    if (_FlipX)
                     {
                         MyDir = CurrentDirection.kDirectionLeft;
                     }
@@ -334,8 +336,54 @@ namespace FishGame.GameObjects
                 }
             }
 
+            //this._Rotation = 0;
+            //if (InputHelper.IsKeyDown(Keys.Left))
+            //{
+            //    _FlipX = true;
+            //    if (InputHelper.IsKeyDown(Keys.Down))
+            //    {
+            //        this._Rotation = MathHelper.ToRadians(-45);
+            //        MyDir = CurrentDirection.kDirectionDownLeft;
+            //    }
+            //    else if(InputHelper.IsKeyDown(Keys.Up))
+            //    {
+            //        this._Rotation = MathHelper.ToRadians(45);
+            //        MyDir = CurrentDirection.kDirectionUpLeft;
+
+            //    }
+            //    else
+            //    {
+            //        MyDir = CurrentDirection.kDirectionLeft;
+            //    }
+            //}
+            //else if (InputHelper.IsKeyDown(Keys.Right))
+            //{
+            //    _FlipX = false;
+            //    if (InputHelper.IsKeyDown(Keys.Up))
+            //    {
+            //        this._Rotation = MathHelper.ToRadians(-45);
+            //        MyDir = CurrentDirection.kDirectionUpRight;
+            //    }
+            //    else if (InputHelper.IsKeyDown(Keys.Down))
+            //    {
+            //        this._Rotation = MathHelper.ToRadians(45);
+            //        MyDir = CurrentDirection.kDirectionDownRight;
+
+            //    }
+            //    else
+            //    {
+            //        MyDir = CurrentDirection.kDirectionRight;
+            //    }
+            //}
             base.Update(gt);
 
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+
+            spriteBatch.Draw(mouthTex, FishMouth, Color.White);
         }
     }
 }

@@ -84,7 +84,7 @@ namespace FishGame
         {
             get
             {
-                return new Vector2((int)_Position.X - (frameWidth / 2), ((int)_Position.Y - (frameHeight / 2)));
+                return new Vector2((int)_Position.X - ((frameWidth * _Scale.X) / 2), ((int)_Position.Y - ((frameHeight * _Scale.Y) / 2)));
             }
         }
 
@@ -92,7 +92,7 @@ namespace FishGame
         {
             get
             {
-                return new Rectangle((int)_TopLeft.X, ((int)_TopLeft.Y), frameWidth, frameHeight);
+                return new Rectangle((int)_TopLeft.X, ((int)_TopLeft.Y), (int)(frameWidth * _Scale.X), (int)(frameHeight * _Scale.Y));
             }
         }
 

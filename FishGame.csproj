@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Game1.cs" />
     <Compile Include="GameObjects\Bubble.cs" />
-    <Compile Include="GameObjects\FIsh.cs" />
+    <Compile Include="GameObjects\Fish.cs" />
     <Compile Include="GameObjects\FoodPellet.cs" />
     <Compile Include="GameObjects\Waterline.cs" />
     <Compile Include="HelperFunctions.cs" />
