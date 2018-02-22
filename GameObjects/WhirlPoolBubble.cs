@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FishGame.GameObjects
 {
-    class Bubble : Sprite
+    class WhirlPoolBubble : Sprite
     {
         float sinSeed = 0;
         float scaleSeed = 0f;
@@ -20,11 +20,9 @@ namespace FishGame.GameObjects
 
         float wobble;
 
-        int wobbleSpeed = 10;
-
         float XsizeBonus;
         float YsizeBonus;
-        public Bubble()
+        public WhirlPoolBubble()
         {
             calcStuff();
         }
@@ -33,13 +31,15 @@ namespace FishGame.GameObjects
         {
 
 
-            this._Position.Y -= (float)(fallSpeed * gt.ElapsedGameTime.TotalSeconds);
+            this._Position.Y += (float)(fallSpeed * gt.ElapsedGameTime.TotalSeconds);
 
+            this._Position.X += (float)(Math.Sin(sinSeed) * wobble);
 
-            this._Position.X += (float)(Math.Sin(sinSeed));// * wobble) );
-
-            wobble += 0.01f;
-
+            //wobble -= 0.02f;
+            if(wobble < 0)
+            {
+                wobble = 0;
+            }
             sinSeed += 0.125f;
 
             this._Scale.X = Math.Abs((float)Math.Cos(scaleSeed)) + XsizeBonus;
@@ -54,7 +54,7 @@ namespace FishGame.GameObjects
             }
 
 
-            scaleSeed += 0.03f;
+            scaleSeed += 0.05f;
 
             if (spinDir == 0)
             {
@@ -62,7 +62,7 @@ namespace FishGame.GameObjects
 
             }
 
-            if (this._Position.Y < 70)
+            if (this._Position.Y > 500)
             {
                 this.Deactivate();
             }
@@ -82,7 +82,7 @@ namespace FishGame.GameObjects
         {
 
             sinSeed = ArmadaRandom.Next(0, 5);
-            wobble = ArmadaRandom.NextFloat(10, 3, 10);
+            wobble = ArmadaRandom.NextFloat(10, 10, 50);
             if (sinSeed == 1)
             {
                 _FlipY = true;

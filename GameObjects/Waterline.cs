@@ -16,7 +16,7 @@ namespace FishGame.GameObjects
 
         public override void Update(GameTime gt)
         {
-            float speed = 50f;
+            float speed = 20f;
 
             this._Position.X += (float)(speed * gt.ElapsedGameTime.TotalSeconds);
 

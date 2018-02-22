@@ -17,7 +17,9 @@ namespace FishGame.GameObjects
         Texture2D mouthTex;
 
         FoodPellet closestPellet;
+        bool pelletLastFrame = false;
 
+        FishTail myTail;
         enum CurrentDirection
         {
             kDirectionRight,
@@ -31,41 +33,77 @@ namespace FishGame.GameObjects
         CurrentDirection MyDir = CurrentDirection.kDirectionRight;
         Rectangle FishMouth
         {
+            //get
+            //{
+            //    Rectangle newRect;
+            //    if(MyDir == CurrentDirection.kDirectionRight)
+            //    {
+            //        newRect = new Rectangle(this._BoundingBox.Right - (int)(15 * this._Scale.X), (this._BoundingBox.Top + (this._BoundingBox.Height / 2)) + (int)(5 * this._Scale.Y), 5, 5);
+            //    }
+            //    else if (MyDir == CurrentDirection.kDirectionLeft)
+            //    {
+            //        newRect = new Rectangle(this._BoundingBox.Left + (int)(10 * this._Scale.X), (this._BoundingBox.Top + (this._BoundingBox.Height / 2) + (int)(5 * this._Scale.Y)), 5, 5);
+            //    }
+            //    else if (MyDir == CurrentDirection.kDirectionUpRight)
+            //    {
+            //        newRect = new Rectangle(this._BoundingBox.Right - (int)(15 * this._Scale.X), (this._BoundingBox.Top + (int)(20 * this._Scale.Y)), 5, 5);
+            //    }
+            //    else if (MyDir == CurrentDirection.kDirectionDownRight)
+            //    {
+            //        newRect = new Rectangle(this._BoundingBox.Right - 25, (this._BoundingBox.Bottom - 20), 5, 5);
+            //    }
+            //    else if (MyDir == CurrentDirection.kDirectionUpLeft)
+            //    {
+            //        newRect = new Rectangle(this._BoundingBox.Left + 10, (this._BoundingBox.Top + 20), 5, 5);
+            //    }
+            //    else if (MyDir == CurrentDirection.kDirectionDownLeft)
+            //    {
+            //        newRect = new Rectangle(this._BoundingBox.Left + 20, (this._BoundingBox.Bottom - 20), 5, 5);
+            //    }
+            //    else
+            //    {
+            //        newRect = new Rectangle();
+            //    }
+            //    return newRect;
+            //}
             get
             {
-                Rectangle newRect;
-                if(MyDir == CurrentDirection.kDirectionRight)
+                Vector2 mouthPos = this._Position;
+                if(_FlipX == false)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Right - (int)(15 * this._Scale.X), (this._BoundingBox.Top + (this.frameWidth / 2)) + (int)(5 * this._Scale.Y), 5, 5);
+                    //mouthPos.X = this._Position.X + (16 * this._Scale.X);
+                    //mouthPos.Y = this._Position.Y + (5 * this._Scale.Y);
                 }
-                else if (MyDir == CurrentDirection.kDirectionLeft)
+
+                float radias = Vector2.Distance(mouthPos, this._Position); // 16 at scale = 1;
+                radias = 16 * this._Scale.X;
+                if(_FlipX)
                 {
-                    newRect = new Rectangle(this._BoundingBox.Left + 10, (this._BoundingBox.Top + (this.frameWidth / 2) + 5), 5, 5);
+                    radias *= -1;
                 }
-                else if (MyDir == CurrentDirection.kDirectionUpRight)
-                {
-                    newRect = new Rectangle(this._BoundingBox.Right - 15, (this._BoundingBox.Top + 20), 5, 5);
-                }
-                else if (MyDir == CurrentDirection.kDirectionDownRight)
-                {
-                    newRect = new Rectangle(this._BoundingBox.Right - 25, (this._BoundingBox.Bottom - 20), 5, 5);
-                }
-                else if (MyDir == CurrentDirection.kDirectionUpLeft)
-                {
-                    newRect = new Rectangle(this._BoundingBox.Left + 10, (this._BoundingBox.Top + 20), 5, 5);
-                }
-                else if (MyDir == CurrentDirection.kDirectionDownLeft)
-                {
-                    newRect = new Rectangle(this._BoundingBox.Left + 20, (this._BoundingBox.Bottom - 20), 5, 5);
-                }
-                else
-                {
-                    newRect = new Rectangle();
-                }
-                return newRect;
+                double mathSin = Math.Sin(_Rotation + MathHelper.ToRadians(90));
+                double mathCos = Math.Cos(_Rotation + MathHelper.ToRadians(90));
+                mouthPos.X = (float)(mouthPos.X + (radias * mathSin));
+                mouthPos.Y = (float)(mouthPos.Y - (radias * mathCos));
+
+                return new Rectangle((int)mouthPos.X, (int)mouthPos.Y, 5, 5);
             }
         }
 
+        public Vector2 TailPosition
+        {
+            get
+            {
+                if(_FlipX)
+                {
+                    return new Vector2(this._BoundingBox.Right, this._BoundingBox.Top + (this._BoundingBox.Height / 2));
+                }
+                else
+                {
+                    return new Vector2(this._BoundingBox.Left, this._BoundingBox.Top + (this._BoundingBox.Height / 2));
+                }
+            }
+        }
         public int Hunger
         {
             get
@@ -115,7 +153,9 @@ namespace FishGame.GameObjects
         public override void LoadContent(string path, ContentManager content)
         {
             mouthTex = content.Load<Texture2D>(@"Art/Corner");
-
+            myTail = new FishTail();
+            myTail.LoadContent(@"Art/FishTail", content);
+            this.AddChild(myTail);
             base.LoadContent(path, content);
         }
 
@@ -123,8 +163,8 @@ namespace FishGame.GameObjects
         {
 
 
-            //RealFishMove(gt, pList);
-            DebugMove();
+            RealFishMove(gt, pList);
+            //DebugMove();
             base.Update(gt);
 
         }
@@ -132,6 +172,12 @@ namespace FishGame.GameObjects
         private void RealFishMove(GameTime gt, List<FoodPellet> pList)
         {
             hungerTimer -= gt.ElapsedGameTime.TotalSeconds;
+
+            if(closestPellet!= null && closestPellet._CurrentState == SpriteState.kStateInActive)
+            {
+                closestPellet = null;
+                fishStatus = FishStatus.kStatusRoam;
+            }
             if (hungerTimer < 0)
             {
                 Hunger++;
@@ -211,6 +257,14 @@ namespace FishGame.GameObjects
                         Hunger -= 20;
                         moving = false;
                         fishStatus = FishStatus.kStatusRoam;
+                        this._Scale.X += 0.3f;
+                        this._Scale.Y += 0.3f;
+
+                        if (this._Scale.X > 2.0f)
+                        {
+                            this._Scale.X = 2.0f;
+                            this._Scale.Y = 2.0f;
+                        }
                     }
                 }
                 else
@@ -344,6 +398,16 @@ namespace FishGame.GameObjects
                     }
                 }
             }
+            
+
+            if(closestPellet != null)
+            {
+                pelletLastFrame = true;
+            }
+            else
+            {
+                pelletLastFrame = false;
+            }
         }
 
         private void DebugMove()
@@ -389,21 +453,61 @@ namespace FishGame.GameObjects
                 }
             }
 
-            if(InputHelper.IsKeyPressed(Keys.Space))
+            if(InputHelper.IsKeyDown(Keys.A))
             {
-                if(this._Scale.X == 1.0f)
+                this._Scale.X -= 0.03f;
+                if(this._Scale.X < 0.1f)
                 {
-                    this._Scale.X = 0.5f;
-                    this._Scale.Y = 0.5f;
-                    Console.WriteLine(this._BoundingBox.Right);
-                }
-                else
-                {
-
-                    this._Scale.X = 1f;
-                    this._Scale.Y = 1f;
+                    this._Scale.X = 0.1f;
                 }
             }
+            else if (InputHelper.IsKeyDown(Keys.D))
+            {
+                this._Scale.X += 0.03f;
+                if (this._Scale.X > 2f)
+                {
+                    this._Scale.X = 2f;
+                }
+            }
+
+            if (InputHelper.IsKeyDown(Keys.W))
+            {
+                this._Scale.Y -= 0.03f;
+                if (this._Scale.Y < 0.1f)
+                {
+                    this._Scale.Y = 0.1f;
+                }
+            }
+            else if (InputHelper.IsKeyDown(Keys.S))
+            {
+                this._Scale.Y += 0.03f;
+                if (this._Scale.Y > 2f)
+                {
+                    this._Scale.Y = 2f;
+                }
+            }
+
+            if(InputHelper.RightButtonClicked)
+            {
+                this._Position = InputHelper.MouseScreenPos;
+            }
+
+            if(InputHelper.IsKeyPressed(Keys.Space))
+            {
+                this._Scale = Vector2.One;
+                this._Rotation = 0;
+            }
+
+            if (InputHelper.IsKeyPressed(Keys.LeftControl))
+            {
+                this._Scale.X = 0.5f;
+                this._Scale.Y = 0.5f;
+            }
+
+            //if(InputHelper.IsKeyDown(Keys.R))
+            //{
+            //    this._Rotation += 0.05f;
+            //}
         }
 
         public override void Draw(SpriteBatch spriteBatch)

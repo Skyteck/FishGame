@@ -16,9 +16,11 @@ namespace FishGame
         SpriteBatch spriteBatch;
 
         Fish fish;
+        Aerator aerator;
         List<FoodPellet> PelletList;
         List<Bubble> BubbleList;
         List<Waterline> WaterLineSprites;
+        List<WhirlPoolBubble> WhirlpoolbubbleList;
         double BubbleTime = 0;
         Random ran;
 
@@ -65,8 +67,9 @@ namespace FishGame
             PelletList = new List<FoodPellet>();
             BubbleList = new List<Bubble>();
             WaterLineSprites = new List<Waterline>();
+            WhirlpoolbubbleList = new List<WhirlPoolBubble>();
 
-            for(int i = -1; (i < (GraphicsDevice.Viewport.Width/32) + 3); i++)
+            for (int i = -1; (i < (GraphicsDevice.Viewport.Width/32) + 3); i++)
             {
                 Waterline nl = new Waterline();
                 nl._Position.X = 32 * i;
@@ -74,6 +77,10 @@ namespace FishGame
                 nl.LoadContent(@"Art/Waterline", Content);
                 WaterLineSprites.Add(nl);
             }
+
+            aerator = new Aerator();
+            aerator.LoadContent(@"Art/Aerator", Content);
+            aerator._Position = new Vector2(150, GraphicsDevice.Viewport.Height - 40);
             // TODO: use this.Content to load your game content here
         }
 
@@ -116,7 +123,7 @@ namespace FishGame
             double bubbleTimer = (1.0 / BubblesPerSec);
             if (BubbleTime > bubbleTimer)
             {
-                GetBubble();
+                //GetBubble();
                 BubbleTime -= bubbleTimer;
                 
 
@@ -132,6 +139,12 @@ namespace FishGame
                 nl.Update(gameTime);
             }
 
+            aerator.UpdateActive(gameTime, BubbleList);
+
+            foreach(WhirlPoolBubble b in WhirlpoolbubbleList)
+            {
+                b.Update(gameTime);
+            }
             base.Update(gameTime);
         }
 
@@ -152,9 +165,12 @@ namespace FishGame
 
             if(InputHelper.RightButtonHeld)
             {
+                //GetWPBubble(InputHelper.MouseScreenPos);
                 GetBubble(InputHelper.MouseScreenPos);
             }
         }
+
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -167,20 +183,25 @@ namespace FishGame
             // TODO: Add your drawing code here
 
 
-            //spriteBatch.Draw(bgTex, new Vector2(0, 70), Color.White);
+            spriteBatch.Draw(bgTex, new Vector2(0, 70), Color.White);
 
-            //foreach (Waterline nl in WaterLineSprites)
-            //{
-            //    nl.Draw(spriteBatch);
-            //}
+            foreach (Waterline nl in WaterLineSprites)
+            {
+                nl.Draw(spriteBatch);
+            }
 
-            //foreach (Bubble b in BubbleList)
-            //{
-            //    b.Draw(spriteBatch);
-            //}
+            foreach (Bubble b in BubbleList)
+            {
+                b.Draw(spriteBatch);
+            }
 
 
-            //spriteBatch.Draw(floorTex, new Vector2(0, GraphicsDevice.Viewport.Height - 50), Color.White);
+            foreach (WhirlPoolBubble b in WhirlpoolbubbleList)
+            {
+                b.Draw(spriteBatch);
+            }
+
+            spriteBatch.Draw(floorTex, new Vector2(0, GraphicsDevice.Viewport.Height - 50), Color.White);
 
             fish.Draw(spriteBatch);
 
@@ -189,7 +210,7 @@ namespace FishGame
                 fp.Draw(spriteBatch);
             }
 
-
+            aerator.Draw(spriteBatch);
 
 
             base.Draw(gameTime);
@@ -248,6 +269,26 @@ namespace FishGame
                 b._Position.Y = ran.Next(500, 600);
                 b._Position = pos;
                 BubbleList.Add(b);
+            }
+        }
+
+
+        private void GetWPBubble(Vector2 pos)
+        {
+            WhirlPoolBubble b = WhirlpoolbubbleList.Find(x => x._CurrentState == Sprite.SpriteState.kStateInActive);
+
+            if (b != null)
+            {
+                b.Activate(pos);
+            }
+            else
+            {
+                b = new WhirlPoolBubble();
+                b.LoadContent(@"Art/Bubble", Content);
+                b._Position.X = ran.Next(0, 800);
+                b._Position.Y = ran.Next(500, 600);
+                b._Position = pos;
+                WhirlpoolbubbleList.Add(b);
             }
         }
     }

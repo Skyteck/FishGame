@@ -41,7 +41,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ArmadaRandom.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameObjects\Aerator.cs" />
+    <Compile Include="GameObjects\FishTail.cs" />
+    <Compile Include="GameObjects\WhirlPoolBubble.cs" />
     <Compile Include="GameObjects\Bubble.cs" />
     <Compile Include="GameObjects\Fish.cs" />
     <Compile Include="GameObjects\FoodPellet.cs" />
