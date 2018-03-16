@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-
 namespace FishGame
 {
     /// <summary>
@@ -26,6 +25,9 @@ namespace FishGame
 
         Texture2D floorTex;
         Texture2D bgTex;
+
+        ArmadaUI.UIManager _UIManager;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -56,6 +58,10 @@ namespace FishGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            _UIManager = new ArmadaUI.UIManager();
+            _UIManager.CreatePanel("Foods", new Vector2(0, 100), new Vector2(50, 300), "Panel");
+            ArmadaUI.UIPanel foodPanel = _UIManager.GetUIPanel("Foods");
+            foodPanel.PlaceButton("Food1", new Vector2(0, 0), null);
 
             floorTex = Content.Load<Texture2D>(@"Art/Rocks");
             bgTex = Content.Load<Texture2D>(@"Art/bg");
@@ -290,6 +296,11 @@ namespace FishGame
                 b._Position = pos;
                 WhirlpoolbubbleList.Add(b);
             }
+        }
+
+        private void SetFoodType()
+        {
+
         }
     }
 }

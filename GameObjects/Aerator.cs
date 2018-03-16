@@ -30,7 +30,7 @@ namespace FishGame.GameObjects
 
 
 
-            double BubblesPerSec = 0.1;
+            double BubblesPerSec = 30;
             int bubblecalc = (int)(BubblesPerSec / 60);
             double bubbleTimer = (1.0 / BubblesPerSec);
             for(int i = 0; i <= bubblecalc; i++)

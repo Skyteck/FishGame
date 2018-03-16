@@ -57,6 +57,9 @@
     <Compile Include="Sprite.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ArmadaUI">
+      <HintPath>..\..\ArmadaUI\ArmadaUI\bin\Windows\x86\Debug\ArmadaUI.exe</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>

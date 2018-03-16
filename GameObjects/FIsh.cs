@@ -146,8 +146,8 @@ namespace FishGame.GameObjects
         {
             ran = new Random();
             moveTimer = ran.Next(0, 5);
-            this._Scale.X = 0.5f;
-            this._Scale.Y = 0.5f;
+            this._Scale.X = 1f;
+            this._Scale.Y = 1f;
         }
 
         public override void LoadContent(string path, ContentManager content)
