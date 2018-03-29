@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +13,8 @@
     <AssemblyName>FishGame</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -43,7 +44,8 @@
   <ItemGroup>
     <Compile Include="ArmadaRandom.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="GameObjects\Aerator.cs" />
+    <Compile Include="GameObjects\Decorations\Aerator.cs" />
+    <Compile Include="GameObjects\Decorations\Decoration.cs" />
     <Compile Include="GameObjects\FishTail.cs" />
     <Compile Include="GameObjects\WhirlPoolBubble.cs" />
     <Compile Include="GameObjects\Bubble.cs" />
@@ -55,11 +57,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="UI\UIButton.cs" />
+    <Compile Include="UI\UIElement.cs" />
+    <Compile Include="UI\UIIcon.cs" />
+    <Compile Include="UI\UILabel.cs" />
+    <Compile Include="UI\UIListItem.cs" />
+    <Compile Include="UI\UIListPanel.cs" />
+    <Compile Include="UI\UIManager.cs" />
+    <Compile Include="UI\UIPanel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ArmadaUI">
-      <HintPath>..\..\ArmadaUI\ArmadaUI\bin\Windows\x86\Debug\ArmadaUI.exe</HintPath>
-    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -71,7 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
+    <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="Content\Fonts\Fipps.spritefont" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Art\" />

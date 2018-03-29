@@ -154,6 +154,9 @@ namespace FishGame
 #endregion
         #region Left Button
 
+        /// <summary>
+        /// Left button is down 
+        /// </summary>
         public static bool LeftButtonDown
         {
             get
@@ -166,6 +169,10 @@ namespace FishGame
             }
         }
 
+
+        /// <summary>
+        /// Left button down this frame but up last frame
+        /// </summary>
         public static bool LeftButtonClicked
         {
             get
@@ -178,6 +185,10 @@ namespace FishGame
             }
         }
 
+
+        /// <summary>
+        /// Left button is not down.
+        /// </summary>
         public static bool LeftButtonUp
         {
             get
@@ -191,6 +202,9 @@ namespace FishGame
             
         }
 
+        /// <summary>
+        /// Left button down last frame and this frame
+        /// </summary>
         public static bool LeftButtonHeld
         {
             get
@@ -204,6 +218,9 @@ namespace FishGame
             
         }
 
+        /// <summary>
+        /// Left button was down last frame but up this frame
+        /// </summary>
         public static bool LeftButtonReleased
         {
             get

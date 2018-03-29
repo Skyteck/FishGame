@@ -26,7 +26,7 @@ namespace FishGame
         Texture2D floorTex;
         Texture2D bgTex;
 
-        ArmadaUI.UIManager _UIManager;
+        UI.UIManager _UIManager;
 
         public Game1()
         {
@@ -58,10 +58,22 @@ namespace FishGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _UIManager = new ArmadaUI.UIManager();
-            _UIManager.CreatePanel("Foods", new Vector2(0, 100), new Vector2(50, 300), "Panel");
-            ArmadaUI.UIPanel foodPanel = _UIManager.GetUIPanel("Foods");
-            foodPanel.PlaceButton("Food1", new Vector2(0, 0), null);
+            _UIManager = new UI.UIManager();
+            _UIManager.LoadContent(Content);
+            _UIManager.CreatePanel("MainMenu", new Vector2(0, 150), new Vector2(50, 202), "Panel");
+            UI.UIPanel mm = _UIManager.GetUIPanel("MainMenu");
+            mm.PlaceButton("Store", new Vector2(5, 5), new Vector2(40, 32), "Store");
+            mm.PlaceButton("Items", new Vector2(5, 45), new Vector2(40, 32), "Items");
+            mm.PlaceButton("Sale", new Vector2(5, 85), new Vector2(40, 32), "Sale");
+            mm.PlaceButton("???", new Vector2(5, 125), new Vector2(40, 32), "???");
+            mm.PlaceButton("Stats", new Vector2(5, 165), new Vector2(40, 32), "Stats");
+            mm._Resizable = false;
+
+            _UIManager.CreatePanel("Store", new Vector2(100, 100), new Vector2(500, 300), "Panel");
+            mm = _UIManager.GetUIPanel("Store");
+            mm._Resizable = false;
+            _UIManager.TogglePanel("Store");
+
 
             floorTex = Content.Load<Texture2D>(@"Art/Rocks");
             bgTex = Content.Load<Texture2D>(@"Art/bg");
@@ -115,6 +127,7 @@ namespace FishGame
 
             // TODO: Add your update logic here
             ProcessMouse(gameTime);
+            ProcessKeyboard(gameTime);
             fish.Update(gameTime, PelletList);
             foreach(FoodPellet fp in PelletList)
             {
@@ -151,7 +164,17 @@ namespace FishGame
             {
                 b.Update(gameTime);
             }
+
+            _UIManager.Update(gameTime);
             base.Update(gameTime);
+        }
+
+        private void ProcessKeyboard(GameTime gt)
+        {
+            if(InputHelper.IsKeyPressed(Keys.Space))
+            {
+                aerator._Position.Y = 0;
+            }
         }
 
         private void ProcessMouse(GameTime gt)
@@ -218,10 +241,16 @@ namespace FishGame
 
             aerator.Draw(spriteBatch);
 
+            _UIManager.Draw(spriteBatch);
 
             base.Draw(gameTime);
 
             spriteBatch.End();
+        }
+
+        private void TogglePanel(String name)
+        {
+            _UIManager.TogglePanel(name);
         }
 
         private void GetBubble()
