@@ -57,12 +57,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="UI\FishGameUI\MainMenu\MainMenuPanel.cs" />
+    <Compile Include="UI\FishGameUI\Store\StoreMenuItem.cs" />
+    <Compile Include="UI\FishGameUI\Store\StoreUIPanel.cs" />
     <Compile Include="UI\UIButton.cs" />
     <Compile Include="UI\UIElement.cs" />
     <Compile Include="UI\UIIcon.cs" />
     <Compile Include="UI\UILabel.cs" />
+    <Compile Include="UI\UIListContainer.cs" />
     <Compile Include="UI\UIListItem.cs" />
-    <Compile Include="UI\UIListPanel.cs" />
     <Compile Include="UI\UIManager.cs" />
     <Compile Include="UI\UIPanel.cs" />
   </ItemGroup>
@@ -74,17 +77,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Art\Aerator.png" />
+    <Content Include="Content\Art\bg.png" />
+    <Content Include="Content\Art\Bubble.png" />
+    <Content Include="Content\Art\buttonIcon.png" />
+    <Content Include="Content\Art\ButtonTex.png" />
+    <Content Include="Content\Art\ButtonTexClicked.png" />
+    <Content Include="Content\Art\ButtonTexHover.png" />
+    <Content Include="Content\Art\Coin.png" />
+    <Content Include="Content\Art\Corner.png" />
+    <Content Include="Content\Art\edgeTex.png" />
+    <Content Include="Content\Art\FishTail.png" />
+    <Content Include="Content\Art\Fishy.png" />
+    <Content Include="Content\Art\PanelBG.png" />
+    <Content Include="Content\Art\Rocks.png" />
+    <Content Include="Content\Art\SlimeShot.png" />
+    <Content Include="Content\Art\Waterline.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="Content\Art\tiki.pdn" />
     <None Include="Content\Fonts\Fipps.spritefont" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\Art\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

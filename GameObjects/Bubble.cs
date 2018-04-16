@@ -40,7 +40,7 @@ namespace FishGame.GameObjects
 
             wobble += 0.01f;
 
-            sinSeed += 0.125f;
+            sinSeed += 0.165f;
 
             this._Scale.X = Math.Abs((float)Math.Cos(scaleSeed)) + XsizeBonus;
             if (this._Scale.X < 0.6f)

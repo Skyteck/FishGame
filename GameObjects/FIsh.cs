@@ -23,11 +23,11 @@ namespace FishGame.GameObjects
         enum CurrentDirection
         {
             kDirectionRight,
-            kDirectionLeft,
-            kDirectionUpRight,
-            kDirectionDownRight,
-            kDirectionUpLeft,
-            kDirectionDownLeft
+            kDirectionLeft
+            //kDirectionUpRight,
+            //kDirectionDownRight,
+            //kDirectionUpLeft,
+            //kDirectionDownLeft
         }
 
         CurrentDirection MyDir = CurrentDirection.kDirectionRight;
@@ -182,7 +182,6 @@ namespace FishGame.GameObjects
             {
                 Hunger++;
                 hungerTimer = 0.5f;
-                Console.WriteLine(Hunger);
                 if (fishStatus == FishStatus.kStatusRoam)
                 {
                     if (hunger > 20)
@@ -339,13 +338,13 @@ namespace FishGame.GameObjects
 
                             if (_FlipX)
                             {
-                                this._Rotation = MathHelper.ToRadians(-45);
-                                MyDir = CurrentDirection.kDirectionDownLeft;
+                                //this._Rotation = MathHelper.ToRadians(-45);
+                                MyDir = CurrentDirection.kDirectionLeft;
                             }
                             else
                             {
-                                this._Rotation = MathHelper.ToRadians(45);
-                                MyDir = CurrentDirection.kDirectionDownRight;
+                                //this._Rotation = MathHelper.ToRadians(45);
+                                MyDir = CurrentDirection.kDirectionRight;
 
                             }
                         }
@@ -361,14 +360,14 @@ namespace FishGame.GameObjects
                         {
                             if (_FlipX)
                             {
-                                this._Rotation = MathHelper.ToRadians(45);
-                                MyDir = CurrentDirection.kDirectionUpLeft;
+                                //this._Rotation = MathHelper.ToRadians(45);
+                                MyDir = CurrentDirection.kDirectionLeft;
 
                             }
                             else
                             {
-                                this._Rotation = MathHelper.ToRadians(-45);
-                                MyDir = CurrentDirection.kDirectionUpRight;
+                                //this._Rotation = MathHelper.ToRadians(-45);
+                                MyDir = CurrentDirection.kDirectionRight;
 
                             }
                         }
@@ -419,13 +418,13 @@ namespace FishGame.GameObjects
                 _FlipX = true;
                 if (InputHelper.IsKeyDown(Keys.Down))
                 {
-                    this._Rotation = MathHelper.ToRadians(-45);
-                    MyDir = CurrentDirection.kDirectionDownLeft;
+                    //this._Rotation = MathHelper.ToRadians(-45);
+                    MyDir = CurrentDirection.kDirectionLeft;
                 }
                 else if (InputHelper.IsKeyDown(Keys.Up))
                 {
-                    this._Rotation = MathHelper.ToRadians(45);
-                    MyDir = CurrentDirection.kDirectionUpLeft;
+                    //this._Rotation = MathHelper.ToRadians(45);
+                    MyDir = CurrentDirection.kDirectionLeft;
 
                 }
                 else
@@ -438,13 +437,13 @@ namespace FishGame.GameObjects
                 _FlipX = false;
                 if (InputHelper.IsKeyDown(Keys.Up))
                 {
-                    this._Rotation = MathHelper.ToRadians(-45);
-                    MyDir = CurrentDirection.kDirectionUpRight;
+                    //this._Rotation = MathHelper.ToRadians(-45);
+                    MyDir = CurrentDirection.kDirectionRight;
                 }
                 else if (InputHelper.IsKeyDown(Keys.Down))
                 {
-                    this._Rotation = MathHelper.ToRadians(45);
-                    MyDir = CurrentDirection.kDirectionDownRight;
+                    //this._Rotation = MathHelper.ToRadians(45);
+                    MyDir = CurrentDirection.kDirectionRight;
 
                 }
                 else

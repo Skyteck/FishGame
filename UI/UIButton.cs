@@ -18,41 +18,39 @@ namespace FishGame.UI
         internal Texture2D _BGClicked;
         internal Texture2D _ActiveTex;
         internal Texture2D iconTex;
-        private int Width;
-        private int Height;
-
         bool Clicked = false;
         bool Hovered = false;
         
-        UILabel _Label;
+        //UILabel _Label;
 
-        
-
-        public UIButton(string name, Vector2 pos, Vector2 size, string label, UIManager uIManager)
+        public UIButton(string name, Vector2 pos, Vector2 size, UIManager uIManager, string l): base(uIManager)
         {
             this._Name = name;
-            this._Position = pos;
-            _UIManager = uIManager;
-            Width = (int)size.X;
-            Height = (int)size.Y;
-            _Label = new UILabel(new Vector2(this._Position.X + (this.Width/2), this._Position.Y + (this.Height / 2)), label, uIManager);
+            SetPosition(pos);
+            _Size = size;
+            this.AddLabel(l);
+        }
+
+        public UIButton(string name, Vector2 pos, Vector2 size, UIManager uIManager) : base(uIManager)
+        {
+            this._Name = name;
+            SetPosition(pos);
+            _Size = size;            
         }
 
         Rectangle _BoundingBox
         {
             get
             {
-                return new Rectangle((int)this._Position.X, (int)this._Position.Y, this.Width, this.Height);
+                return new Rectangle((int)this._Position.X, (int)this._Position.Y, (int)this._Size.X, (int)this._Size.Y);
             }
         }
 
-        public void LoadContent(string texName)
+        public override void LoadContent(string texName)
         {
             _BG = _UIManager.GetTexture(texName);
             _BGClicked = _UIManager.GetTexture(texName + "Clicked");
-            _BGHover = _UIManager.GetTexture(texName + "Hover");
-
-            _Label.LoadContent("Fipps");
+            _BGHover = _UIManager.GetTexture(texName + "Hover");            
 
             _ActiveTex = _BG;
         }
@@ -103,11 +101,6 @@ namespace FishGame.UI
             ButtonPressed?.Invoke(this);
         }
 
-        private void test(string t)
-        {
-
-        }
-
         internal void ProcessClick(Vector2 pos)
         {
             //button clicked, so mark as clicked and check in update if the click is released and stil in hitbox
@@ -124,22 +117,30 @@ namespace FishGame.UI
             iconTex = _UIManager.GetTexture(iconName);
         }
 
+        public void AddLabel(string l)
+        {
+            UI.UILabel nL = new UILabel(new Vector2(this._Size.X / 2, this._Size.Y / 2), this._UIManager, l);
+            nL.LoadContent("Fipps");
+            AddChild(nL);
+            //_Label = nL;
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_ActiveTex, this._BoundingBox, Color.White);
             Vector2 textPos = this._BoundingBox.Center.ToVector2();
 
-            if(iconTex == null)
-            {
-                if(_Label != null)
-                {
-                    _Label.Draw(spriteBatch);
-                }
-            }
-            else
-            {
-                spriteBatch.Draw(iconTex, new Vector2(textPos.X - (iconTex.Width / 2), textPos.Y - (iconTex.Height / 2)), Color.White);
-            }
+            //if(iconTex == null)
+            //{
+            //    if(_Label != null)
+            //    {
+            //        _Label.Draw(spriteBatch);
+            //    }
+            //}
+            //else
+            //{
+            //    spriteBatch.Draw(iconTex, new Vector2(textPos.X - (iconTex.Width / 2), textPos.Y - (iconTex.Height / 2)), Color.White);
+            //}
 
             
             if (Hovered)
@@ -147,6 +148,7 @@ namespace FishGame.UI
                 if (Clicked) return;
                 DrawRectangleOutline(spriteBatch, this._BoundingBox, _BGHover, Color.White, 1);
             }
+            base.Draw(spriteBatch);
 
         }
 

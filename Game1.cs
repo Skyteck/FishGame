@@ -60,18 +60,22 @@ namespace FishGame
 
             _UIManager = new UI.UIManager();
             _UIManager.LoadContent(Content);
-            _UIManager.CreatePanel("MainMenu", new Vector2(0, 150), new Vector2(50, 202), "Panel");
-            UI.UIPanel mm = _UIManager.GetUIPanel("MainMenu");
-            mm.PlaceButton("Store", new Vector2(5, 5), new Vector2(40, 32), "Store");
-            mm.PlaceButton("Items", new Vector2(5, 45), new Vector2(40, 32), "Items");
-            mm.PlaceButton("Sale", new Vector2(5, 85), new Vector2(40, 32), "Sale");
-            mm.PlaceButton("???", new Vector2(5, 125), new Vector2(40, 32), "???");
-            mm.PlaceButton("Stats", new Vector2(5, 165), new Vector2(40, 32), "Stats");
-            mm._Resizable = false;
 
-            _UIManager.CreatePanel("Store", new Vector2(100, 100), new Vector2(500, 300), "Panel");
-            mm = _UIManager.GetUIPanel("Store");
-            mm._Resizable = false;
+            UI.MainMenuPanel mm = new UI.MainMenuPanel(_UIManager);
+            mm.LoadContent("Panel");
+            mm.SetSize(new Vector2(50, 202));
+            mm.Setup();
+            mm.SetPosition(new Vector2(-45, 150));
+            _UIManager.AddPanel(mm);
+
+            UI.StoreUIPanel storePanel = new UI.StoreUIPanel(_UIManager);
+            storePanel.LoadContent("Panel");
+            storePanel.SetSize(new Vector2(500, 300));
+            storePanel.Setup();
+            storePanel.SetPosition(new Vector2(100, 100));
+            _UIManager.AddPanel(storePanel);
+
+            
             _UIManager.TogglePanel("Store");
 
 

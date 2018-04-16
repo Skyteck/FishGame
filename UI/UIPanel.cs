@@ -23,7 +23,6 @@ namespace FishGame.UI
         protected int scrollPos = 0;
 
         public Vector2 _InitialPos = Vector2.Zero;
-        public Vector2 Size;
         public bool _Showing = true;
         private bool xTracked = false;
         private bool yTracked = false;
@@ -88,7 +87,7 @@ namespace FishGame.UI
             }
         }
 
-        public UIPanel()
+        public UIPanel(UIManager uim) : base(uim)
         {
             ButtonList = new List<UIButton>();
             LabelList = new List<UILabel>();
@@ -98,23 +97,30 @@ namespace FishGame.UI
         {
             _Texture = _UIManager.GetTexture(name + "BG");
             edgeTex = _UIManager.GetTexture("edgeTex");
-            adjustedHeight = _Texture.Height;
-            adJustedWidth = _Texture.Width;
         }
 
-        public void PlaceLabel(Vector2 pos, string text)
+        public void PlaceLabel(Vector2 pos)
         {
-            UILabel l = new UILabel(new Vector2(this._Position.X + pos.X, this._Position.Y + pos.Y), text, _UIManager);
+            UILabel l = new UILabel(new Vector2(this._Position.X + pos.X, this._Position.Y + pos.Y), _UIManager);
             l.LoadContent("Fipps");
             LabelList.Add(l);
         }
 
+        public void PlaceLabel(Vector2 pos, string text)
+        {
+            UILabel l = new UILabel(new Vector2(this._Position.X + pos.X, this._Position.Y + pos.Y), _UIManager, text);
+            l.LoadContent("Fipps");
+            LabelList.Add(l);
+            AddChild(l);
+        }
+
         public void PlaceButton(string Name, Vector2 pos, Vector2 size, string label)
         {
-            UIButton b = new UIButton(Name, new Vector2(this._Position.X + pos.X, this._Position.Y + pos.Y), size , label, _UIManager);
+            UIButton b = new UIButton(Name, new Vector2(this._Position.X + pos.X, this._Position.Y + pos.Y), size, _UIManager, label);
+            b.OffsetPos = pos;
             b.LoadContent("ButtonTex");
-            //b.SetIcon("buttonIcon");
             _UIManager.AttachButton(b);
+            AddChild(b);
             ButtonList.Add(b);
 
         }
@@ -301,15 +307,7 @@ namespace FishGame.UI
                     spriteBatch.Draw(edgeTex, _RightEdge, Color.White);
                 }
 
-                foreach(UIButton b in ButtonList)
-                {
-                    if(b._Show) b.Draw(spriteBatch);
-                }
-
-                foreach(UILabel l in LabelList)
-                {
-                    if(l._Show) l.Draw(spriteBatch);
-                }
+                base.Draw(spriteBatch);
 
             }
         }

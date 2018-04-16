@@ -8,26 +8,33 @@ using System.Threading.Tasks;
 
 namespace FishGame.UI
 {
-    class UILabel : UIElement
+    public class UILabel : UIElement
     {
-        string _Label;
+        public string _Label;
         private SpriteFont font;
-        Vector2 _Size;
 
-        public UILabel(Vector2 pos, string text, UIManager uim)
+        public UILabel(Vector2 pos, UIManager uim) : base(uim)
         {
-            _Position = pos;
-            _Label = text;
-            _UIManager = uim;
+            this.OffsetPos = pos;
         }
+
+        public UILabel(Vector2 pos, UIManager uim, string text) : base(uim)
+        {
+            this.OffsetPos = pos;
+            _Label = text;
+        }
+        
 
         public override void LoadContent(string fontName)
         {
             font = _UIManager.GetFont(fontName);
 
-            _Size = font.MeasureString(_Label);
-            _Position.X -= (int)(_Size.X / 2);
-            _Position.Y -= (int)(_Size.Y / 2);
+            if(_Label != null)
+            {
+                _Size = font.MeasureString(_Label);
+                OffsetPos.X -= (int)(_Size.X / 2);
+                OffsetPos.Y -= (int)(_Size.Y / 2);
+            }
         }
 
         public override void Draw(SpriteBatch sb)

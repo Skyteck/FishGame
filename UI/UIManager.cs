@@ -14,9 +14,15 @@ namespace FishGame.UI
     {        
         List<UIPanel> PanelList;
         ContentManager _ContentManager;
+
+        Rectangle mmSlideInRect;
+        Rectangle mmSlideOutRect;
+
         public UIManager()
         {
             PanelList = new List<UIPanel>();
+            mmSlideInRect = new Rectangle(0, 140, 60, 220);
+            mmSlideOutRect = new Rectangle(0, 120, 100, 260);
         }
 
         public void LoadContent(ContentManager content)
@@ -26,12 +32,16 @@ namespace FishGame.UI
 
         public void CreatePanel(String name, Vector2 pos, Vector2 size, string texName)
         {
-            UIPanel p = new UIPanel();
+            UIPanel p = new UIPanel(this);
             p._Name = name;
-            p._UIManager = this;
             p.LoadContent(texName);
-            p._Position = pos;
+            p.SetPosition(pos);
             p.SetSize(size);
+            PanelList.Add(p);
+        }
+
+        public void AddPanel(UIPanel p)
+        {
             PanelList.Add(p);
         }
 
@@ -77,6 +87,36 @@ namespace FishGame.UI
                     p.ProcessClick(InputHelper.MouseScreenPos);
                 }
             }
+
+            if(mmSlideOutRect.Contains(InputHelper.MouseScreenPos))
+            {
+                if(mmSlideInRect.Contains(InputHelper.MouseScreenPos))
+                {
+                    UIPanel mm = this.GetUIPanel("MainMenu");
+                    Vector2 prevPos = mm._Position;
+                    mm.SetPosition(new Vector2(mm._Position.X + 3, mm._Position.Y));
+                    if(mm._Position.X >= mm._Size.X)
+                    {
+                        mm.SetPosition(prevPos);
+                    }
+                }
+            }
+            else
+            {
+                UIPanel mm = this.GetUIPanel("MainMenu");
+                mm.SetPosition(new Vector2(mm._Position.X - 1, mm._Position.Y));
+                if (mm._Position.X <= -45)
+                {
+                    mm.SetPosition(new Vector2(-45, 150));
+                }
+
+            }
+
+            if(InputHelper.IsKeyPressed(Keys.D1))
+            {
+                TogglePanel("Store");
+            }
+
         }
 
         internal SpriteFont GetFont(string v)
