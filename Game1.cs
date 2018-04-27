@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using FishGame.GameObjects.Items;
+
 namespace FishGame
 {
     /// <summary>
@@ -14,12 +16,14 @@ namespace FishGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Fish fish;
+        List<Fish> Fishies;
         Aerator aerator;
         List<FoodPellet> PelletList;
         List<Bubble> BubbleList;
         List<Waterline> WaterLineSprites;
         List<WhirlPoolBubble> WhirlpoolbubbleList;
+        List<FishEgg> fishEggList;
+
         double BubbleTime = 0;
         Random ran;
 
@@ -81,10 +85,10 @@ namespace FishGame
 
             floorTex = Content.Load<Texture2D>(@"Art/Rocks");
             bgTex = Content.Load<Texture2D>(@"Art/bg");
-            fish = new Fish();
-            fish.LoadContent(@"Art/Fishy", Content);
 
-            fish._Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            Fishies = new List<Fish>();
+            fishEggList = new List<FishEgg>();
+            
 
             PelletList = new List<FoodPellet>();
             BubbleList = new List<Bubble>();
@@ -132,12 +136,28 @@ namespace FishGame
             // TODO: Add your update logic here
             ProcessMouse(gameTime);
             ProcessKeyboard(gameTime);
-            fish.Update(gameTime, PelletList);
+
+            foreach(Fish fish in Fishies)
+            {
+                fish.Update(gameTime, PelletList);
+            }
+            
             foreach(FoodPellet fp in PelletList)
             {
                 fp.Update(gameTime);
 
 
+            }
+
+            foreach(FishEgg egg in fishEggList)
+            {
+                Vector2 eggPos = egg._Position;
+                egg.Update(gameTime);
+                if(egg.makeFish)
+                {
+                    CreateFish(eggPos);
+                }
+                egg.makeFish = false;
             }
 
             BubbleTime += gameTime.ElapsedGameTime.TotalSeconds;
@@ -183,7 +203,7 @@ namespace FishGame
 
         private void ProcessMouse(GameTime gt)
         {
-            if(InputHelper.LeftButtonClicked)
+            if(InputHelper.LeftButtonHeld)
             {
                 if(InputHelper.MouseScreenPos.Y < 70)
                 {
@@ -191,7 +211,15 @@ namespace FishGame
                 }
             }
 
-            if(InputHelper.IsKeyDown(Keys.LeftControl) && InputHelper.IsKeyDown(Keys.LeftShift) && InputHelper.LeftButtonClicked)
+            if (InputHelper.RightButtonClicked)
+            {
+                if (InputHelper.MouseScreenPos.Y < 70)
+                {
+                    CreateEgg(InputHelper.MouseScreenPos);
+                }
+            }
+
+            if (InputHelper.IsKeyDown(Keys.LeftControl) && InputHelper.IsKeyDown(Keys.LeftShift) && InputHelper.LeftButtonClicked)
             {
                 Console.WriteLine(InputHelper.MouseScreenPos);
             }
@@ -210,8 +238,10 @@ namespace FishGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            Color WaterColor = new Color(204, 176, 148, 255);
-            GraphicsDevice.Clear(WaterColor);
+
+            Color WallColor = new Color(204, 176, 148, 255);
+            //Color WaterColor = new Color(0, 176, 0, 255);
+            GraphicsDevice.Clear(WallColor);
             spriteBatch.Begin();
             // TODO: Add your drawing code here
 
@@ -236,11 +266,19 @@ namespace FishGame
 
             spriteBatch.Draw(floorTex, new Vector2(0, GraphicsDevice.Viewport.Height - 50), Color.White);
 
-            fish.Draw(spriteBatch);
+            foreach(Fish fish in Fishies)
+            {
+                fish.Draw(spriteBatch);
+            }
 
             foreach (FoodPellet fp in PelletList)
             {
                 fp.Draw(spriteBatch);
+            }
+
+            foreach(FishEgg egg in fishEggList)
+            {
+                egg.Draw(spriteBatch);
             }
 
             aerator.Draw(spriteBatch);
@@ -331,9 +369,35 @@ namespace FishGame
             }
         }
 
-        private void SetFoodType()
+        private void CreateFish(Vector2 pos)
         {
+            
+            Fish fish = new Fish();
+            fish.LoadContent(@"Art/Fishy", Content);
 
+            fish._Position = pos;
+            Fishies.Add(fish);
+
+        }
+
+        private void CreateEgg(Vector2 pos)
+        {
+            FishEgg b = fishEggList.Find(x => x._CurrentState == Sprite.SpriteState.kStateInActive);
+
+            if (b != null)
+            {
+                b.Activate(pos);
+            }
+            else
+            {
+                b = new FishEgg();
+                b.LoadContent(@"Art/FishEgg", Content);
+                b._Position.X = ran.Next(0, 800);
+                b._Position.Y = ran.Next(500, 600);
+                b._Position = pos;
+                b.Activate(pos);
+                fishEggList.Add(b);
+            }
         }
     }
 }

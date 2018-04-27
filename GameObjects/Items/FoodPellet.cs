@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace FishGame
+namespace FishGame.GameObjects.Items
 {
     class FoodPellet : Sprite
     {
@@ -44,7 +44,7 @@ namespace FishGame
 
         public override void Activate(Vector2 pos)
         {
-            sinSeed = new Random().Next(0, 5);
+            sinSeed = ArmadaRandom.Next(0, 5);
 
             base.Activate(pos);
         }

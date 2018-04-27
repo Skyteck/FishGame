@@ -44,16 +44,19 @@
   <ItemGroup>
     <Compile Include="ArmadaRandom.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameObjects\Critters\Snail.cs" />
     <Compile Include="GameObjects\Decorations\Aerator.cs" />
     <Compile Include="GameObjects\Decorations\Decoration.cs" />
     <Compile Include="GameObjects\FishTail.cs" />
+    <Compile Include="GameObjects\Items\FishEgg.cs" />
     <Compile Include="GameObjects\WhirlPoolBubble.cs" />
     <Compile Include="GameObjects\Bubble.cs" />
     <Compile Include="GameObjects\Fish.cs" />
-    <Compile Include="GameObjects\FoodPellet.cs" />
+    <Compile Include="GameObjects\Items\FoodPellet.cs" />
     <Compile Include="GameObjects\Waterline.cs" />
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="InputHelper.cs" />
+    <Compile Include="ItemsManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />
@@ -87,6 +90,7 @@
     <Content Include="Content\Art\Coin.png" />
     <Content Include="Content\Art\Corner.png" />
     <Content Include="Content\Art\edgeTex.png" />
+    <Content Include="Content\Art\FishEgg.png" />
     <Content Include="Content\Art\FishTail.png" />
     <Content Include="Content\Art\Fishy.png" />
     <Content Include="Content\Art\PanelBG.png" />

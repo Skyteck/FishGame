@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using FishGame.GameObjects.Items;
+
 namespace FishGame.GameObjects
 {
     class Fish : Sprite
@@ -146,8 +148,8 @@ namespace FishGame.GameObjects
         {
             ran = new Random();
             moveTimer = ran.Next(0, 5);
-            this._Scale.X = 1f;
-            this._Scale.Y = 1f;
+            this._Scale.X = 0.2f;
+            this._Scale.Y = 0.2f;
         }
 
         public override void LoadContent(string path, ContentManager content)
@@ -159,7 +161,7 @@ namespace FishGame.GameObjects
             base.LoadContent(path, content);
         }
 
-        public void Update(GameTime gt, List<FoodPellet> pList)
+        public void Update(GameTime gt, List<Items.FoodPellet> pList)
         {
 
 
@@ -169,7 +171,7 @@ namespace FishGame.GameObjects
 
         }
 
-        private void RealFishMove(GameTime gt, List<FoodPellet> pList)
+        private void RealFishMove(GameTime gt, List<Items.FoodPellet> pList)
         {
             hungerTimer -= gt.ElapsedGameTime.TotalSeconds;
 
@@ -184,7 +186,7 @@ namespace FishGame.GameObjects
                 hungerTimer = 0.5f;
                 if (fishStatus == FishStatus.kStatusRoam)
                 {
-                    if (hunger > 20)
+                    if (hunger > 40)
                     {
                         fishStatus = FishStatus.kStatusFood;
                     }
@@ -201,11 +203,11 @@ namespace FishGame.GameObjects
                     moving = true;
                     Random ran = new Random();
 
-                    moveTimer = ran.Next(0, 5);
+                    moveTimer = ran.Next(0, 8);
 
 
-                    targetPos.X = ran.Next(20, 700);
-                    targetPos.Y = ran.Next(75, 400);
+                    targetPos.X = ran.Next(10, 750);
+                    targetPos.Y = ran.Next(85, 450);
                 }
             }
             else if (fishStatus == FishStatus.kStatusFood)
@@ -214,7 +216,7 @@ namespace FishGame.GameObjects
                 {
 
                     float closestDistance = 100000;
-                    foreach (FoodPellet p in pList.FindAll(x => x._CurrentState == SpriteState.kStateActive))
+                    foreach (Items.FoodPellet p in pList.FindAll(x => x._CurrentState == SpriteState.kStateActive))
                     {
                         //find closest pellet.
                         if (p._Position.Y < 70)
@@ -253,7 +255,7 @@ namespace FishGame.GameObjects
                     {
                         closestPellet.Deactivate();
                         closestPellet = null;
-                        Hunger -= 20;
+                        Hunger -= 50;
                         moving = false;
                         fishStatus = FishStatus.kStatusRoam;
                         this._Scale.X += 0.3f;
